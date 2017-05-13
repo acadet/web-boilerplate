@@ -6,39 +6,67 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-concurrent');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+
+    var coffeeFiles = [
+        'coffee/FIXME.coffee',
+    ];
 
     // Project configuration
     grunt.initConfig({
         coffee: {
-            dist: {
+            dev: {
                 options: {
                     bare: true,
                     join: true
                 },
                 files: {
-                    'build/all.js': [
-                        'coffee/FIXME.coffee',
-                    ]
+                    'dev/all.js': coffeeFiles
+                }
+            },
+            prod: {
+                options: {
+                    bare: true,
+                    join: true
+                },
+                files: {
+                    'prod/all_original.js': coffeeFiles
                 }
             }
         },
         jade: {
-            dist: {
+            dev: {
                 options: {
                     pretty: true
                 },
                 files: {
-                    'build/index.html': 'jade/index.jade'
+                    'dev/index.html': 'jade/index.jade'
+                }
+            },
+            prod: {
+                options: {
+                    pretty: true
+                },
+                files: {
+                    'prod/index.html': 'jade/index.jade'
                 }
             }
         },
         sass: {
-            dist: {
+            dev: {
                 options: {
                     sourcemap: 'none'
                 },
                 files: {
-                    'build/all.css': 'sass/all.scss'
+                    'dev/all.css': 'sass/all.scss'
+                }
+            },
+            prod: {
+                options: {
+                    sourcemap: 'none'
+                },
+                files: {
+                    'prod/all.css': 'sass/all.scss'
                 }
             }
         },
@@ -76,13 +104,28 @@ module.exports = function (grunt) {
                     limit: 3
                 }
             }
+        },
+        uglify: {
+            dist: {
+                files: {
+                    'prod/all.js': 'prod/all_original.js'
+                }
+            }
         }
     });
 
-    // Default task
-    grunt.registerTask('default', [
-        'coffee',
-        'jade',
-        'sass'
+    grutn.registerTask('default', 'concurrent');
+
+    grunt.registerTask('dev', [
+        'coffee:dev',
+        'jade:dev',
+        'sass:dev'
+    ]);
+
+    grunt.registerTask('prod', [
+        'coffee:prod',
+        'jade:prod',
+        'sass:prod',
+        'uglify'
     ]);
 };
