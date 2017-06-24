@@ -2,7 +2,7 @@ module.exports = function (grunt) {
     'use strict';
 
     grunt.loadNpmTasks('grunt-contrib-coffee');
-    grunt.loadNpmTasks('grunt-contrib-jade');
+    grunt.loadNpmTasks('grunt-contrib-pug');
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-concurrent');
@@ -34,13 +34,13 @@ module.exports = function (grunt) {
                 }
             }
         },
-        jade: {
+        pug: {
             dev: {
                 options: {
                     pretty: true
                 },
                 files: {
-                    'dev/index.html': 'jade/index.jade'
+                    'dev/index.html': 'pug/index.pug'
                 }
             },
             prod: {
@@ -48,7 +48,7 @@ module.exports = function (grunt) {
                     pretty: true
                 },
                 files: {
-                    'prod/index.html': 'jade/index.jade'
+                    'prod/index.html': 'pug/index.pug'
                 }
             }
         },
@@ -73,15 +73,15 @@ module.exports = function (grunt) {
         watch: {
             coffee: {
                 files: 'coffee/**/*.coffee',
-                tasks: ['coffee'],
+                tasks: ['coffee:dev'],
                 options: {
                     interrupt: true,
                     atBegin: true
                 }
             },
-            jade: {
-                files: 'jade/**/*.jade',
-                tasks: ['jade'],
+            pug: {
+                files: 'pug/**/*.pug',
+                tasks: ['pug:dev'],
                 options: {
                     interrupt: true,
                     atBegin: true
@@ -89,7 +89,7 @@ module.exports = function (grunt) {
             },
             sass: {
                 files: 'sass/**/*.scss',
-                tasks: ['sass'],
+                tasks: ['sass:dev'],
                 options: {
                     interrupt: true,
                     atBegin: true
@@ -98,7 +98,7 @@ module.exports = function (grunt) {
         },
         concurrent: {
             dist: {
-                tasks: ['watch:coffee', 'watch:sass', 'watch:jade'],
+                tasks: ['watch:coffee', 'watch:sass', 'watch:pug'],
                 options: {
                     logConcurrentOutput: true,
                     limit: 3
@@ -114,17 +114,17 @@ module.exports = function (grunt) {
         }
     });
 
-    grutn.registerTask('default', 'concurrent');
+    grunt.registerTask('default', 'concurrent');
 
     grunt.registerTask('dev', [
         'coffee:dev',
-        'jade:dev',
+        'pug:dev',
         'sass:dev'
     ]);
 
     grunt.registerTask('prod', [
         'coffee:prod',
-        'jade:prod',
+        'pug:prod',
         'sass:prod',
         'uglify'
     ]);
