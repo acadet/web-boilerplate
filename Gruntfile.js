@@ -7,6 +7,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-concurrent');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
     var coffeeFiles = [
         'coffee/FIXME.coffee',
@@ -45,7 +46,7 @@ module.exports = function (grunt) {
             },
             prod: {
                 options: {
-                    pretty: true
+                    pretty: false
                 },
                 files: {
                     'prod/index.html': 'pug/index.pug'
@@ -63,7 +64,8 @@ module.exports = function (grunt) {
             },
             prod: {
                 options: {
-                    sourcemap: 'none'
+                    sourcemap: 'none',
+                    outputStyle: 'compressed'
                 },
                 files: {
                     'prod/all.css': 'sass/all.scss'
@@ -111,7 +113,20 @@ module.exports = function (grunt) {
                     'prod/all.js': 'prod/all_original.js'
                 }
             }
-        }
+        },
+        copy: {
+          dev: {
+            src: ['imgs/**', 'favicon/**'],
+            dest: 'dev/',
+            expand: true,
+            flatten: true
+          },
+          prod: {
+            src: ['imgs/**', 'favicon/**'],
+            dest: 'prod/',
+            expand: true,
+            flatten: true
+          },
     });
 
     grunt.registerTask('default', 'concurrent');
@@ -119,13 +134,14 @@ module.exports = function (grunt) {
     grunt.registerTask('dev', [
         'coffee:dev',
         'pug:dev',
-        'sass:dev'
+        'sass:dev',
+        'copy:dev',
     ]);
 
     grunt.registerTask('prod', [
         'coffee:prod',
         'pug:prod',
         'sass:prod',
-        'uglify'
+        'copy:prod'
     ]);
 };
