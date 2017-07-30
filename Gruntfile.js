@@ -126,7 +126,8 @@ module.exports = function (grunt) {
             dest: 'prod/',
             expand: true,
             flatten: true
-          },
+          }
+        }
     });
 
     grunt.registerTask('default', 'concurrent');
